@@ -1,0 +1,19 @@
+import { UserButton } from '@clerk/nextjs'
+import Link from 'next/link'
+
+export default function AppLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="bg-background min-h-screen">
+      <nav className="border-b bg-white">
+        <div className="container mx-auto flex h-14 items-center justify-between px-4">
+          <Link href="/dashboard" className="flex items-center gap-2 font-semibold">
+            <span>⚽</span>
+            <span>TipRoom</span>
+          </Link>
+          <UserButton />
+        </div>
+      </nav>
+      {children}
+    </div>
+  )
+}
