@@ -103,3 +103,52 @@ export async function getTournaments() {
     orderBy: { startDate: 'asc' },
   })
 }
+
+export async function getRoomData(slug: string) {
+  const user = await getCurrentUser()
+
+  const room = await db.room.findUnique({
+    where: { slug },
+    include: {
+      tournament: { select: { id: true, name: true, slug: true } },
+      members: {
+        where: { userId: user.id },
+        select: { role: true },
+      },
+    },
+  })
+
+  if (!room || room.members.length === 0) return null
+
+  const matches = await db.match.findMany({
+    where: { tournamentId: room.tournamentId },
+    orderBy: { kickoffAt: 'asc' },
+  })
+
+  const bets = await db.bet.findMany({
+    where: { roomId: room.id, userId: user.id },
+    select: {
+      matchId: true,
+      predictedHome: true,
+      predictedAway: true,
+      pointsEarned: true,
+      oddsUsed: true,
+    },
+  })
+
+  return {
+    room: {
+      id: room.id,
+      name: room.name,
+      slug: room.slug,
+      inviteCode: room.inviteCode,
+      scoringMode: room.scoringMode,
+      tournament: room.tournament,
+    },
+    userRole: room.members[0]!.role,
+    matches: matches.map((m) => ({
+      ...m,
+      bet: bets.find((b) => b.matchId === m.id) ?? null,
+    })),
+  }
+}
