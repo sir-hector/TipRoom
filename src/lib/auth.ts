@@ -1,6 +1,11 @@
 import { auth, clerkClient } from '@clerk/nextjs/server'
 import { db } from './db'
 
+export async function isAppAdmin(): Promise<boolean> {
+  const { sessionClaims } = await auth()
+  return sessionClaims?.metadata?.role === 'admin'
+}
+
 export async function getCurrentUser() {
   const { userId: clerkId } = await auth()
   if (!clerkId) throw new Error('Not authenticated')
