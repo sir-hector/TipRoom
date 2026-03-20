@@ -2,17 +2,17 @@
 
 ## Decisions
 
-| Concern | Choice | Reason |
-|---|---|---|
-| Framework | Next.js 14+ (App Router) | Frontend + API routes + SSR in one codebase |
-| Styling | Tailwind CSS + shadcn/ui | Fast, accessible, widely documented |
-| Auth | Clerk | Near-zero setup, handles sessions/social login/magic links, generous free tier |
-| Database | Supabase (PostgreSQL) | Free tier, row-level security, Realtime ready for v2 |
-| ORM | Prisma | Type-safe queries, easy migrations, great Next.js DX |
-| Data fetching | TanStack Query | Server state, caching, background refetch for leaderboard |
-| Deployment | Vercel | Native Next.js support, free tier, Cron Jobs built in |
-| Testing (unit) | Vitest | Fast, compatible with Next.js, great TypeScript support |
-| Testing (e2e) | Playwright | Best-in-class, cross-browser, good CI integration |
+| Concern        | Choice                   | Reason                                                                         |
+| -------------- | ------------------------ | ------------------------------------------------------------------------------ |
+| Framework      | Next.js 14+ (App Router) | Frontend + API routes + SSR in one codebase                                    |
+| Styling        | Tailwind CSS + shadcn/ui | Fast, accessible, widely documented                                            |
+| Auth           | Clerk                    | Near-zero setup, handles sessions/social login/magic links, generous free tier |
+| Database       | Supabase (PostgreSQL)    | Free tier, row-level security, Realtime ready for v2                           |
+| ORM            | Prisma                   | Type-safe queries, easy migrations, great Next.js DX                           |
+| Data fetching  | TanStack Query           | Server state, caching, background refetch for leaderboard                      |
+| Deployment     | Vercel                   | Native Next.js support, free tier, Cron Jobs built in                          |
+| Testing (unit) | Vitest                   | Fast, compatible with Next.js, great TypeScript support                        |
+| Testing (e2e)  | Playwright               | Best-in-class, cross-browser, good CI integration                              |
 
 ## Project Structure
 

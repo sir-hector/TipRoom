@@ -2,24 +2,26 @@
 
 ## Current Default: Odds-Based
 
-| Prediction | Formula | Example (odds=2.15) |
-|---|---|---|
-| Exact score | odds × 3 | 2.15 × 3 = **6.45 pts** |
+| Prediction                   | Formula  | Example (odds=2.15)     |
+| ---------------------------- | -------- | ----------------------- |
+| Exact score                  | odds × 3 | 2.15 × 3 = **6.45 pts** |
 | Correct winner (wrong score) | odds × 1 | 2.15 × 1 = **2.15 pts** |
-| Correct draw (wrong score) | odds × 1 | draw_odds × 1 |
-| Wrong result | 0 | 0 pts |
+| Correct draw (wrong score)   | odds × 1 | draw_odds × 1           |
+| Wrong result                 | 0        | 0 pts                   |
 
 The multiplier for exact score is always **3×** regardless of actual goals.
 
 ## Scoring Modes (configurable per room)
 
 ### ODDS_BASED (default)
+
 - Rewards predicting upsets — higher odds = more points
 - Requires odds to be set per match
 - exact = odds × exactMultiplier (default 3)
 - winner/draw = odds × 1
 
 ### FIXED
+
 - No odds needed — pure skill
 - Exact score = 5 pts
 - Correct winner = 2 pts
@@ -27,14 +29,15 @@ The multiplier for exact score is always **3×** regardless of actual goals.
 - Wrong = 0
 
 ### HYBRID
+
 - Everyone earns base points for correct winner (no odds dependency)
 - Bonus on top for exact score
 
-| Outcome | Points |
-|---|---|
-| Exact score | 2 (base) + odds × 1.5 (bonus) |
-| Correct winner | 2 (base) |
-| Wrong | 0 |
+| Outcome        | Points                        |
+| -------------- | ----------------------------- |
+| Exact score    | 2 (base) + odds × 1.5 (bonus) |
+| Correct winner | 2 (base)                      |
+| Wrong          | 0                             |
 
 ## Scoring Config JSON
 
@@ -54,6 +57,7 @@ Stored on the Room as `scoringConfig`. Overrides default multipliers:
 ## Default Odds
 
 When odds are not set for a match, **default to 1.0**. This means:
+
 - Exact score = 1.0 × 3 = **3 pts**
 - Correct winner = 1.0 × 1 = **1 pt**
 
@@ -74,7 +78,7 @@ type ScoringInput = {
   actualHome: number
   actualAway: number
   mode: ScoringMode
-  odds: number           // relevant odds (home/away/draw depending on actual result)
+  odds: number // relevant odds (home/away/draw depending on actual result)
   config?: ScoringConfig
 }
 
@@ -119,13 +123,13 @@ function getWinner(home: number, away: number): 'home' | 'away' | 'draw' {
 
 To keep things interesting beyond match predictions:
 
-| Bet Type | Description | Points |
-|---|---|---|
-| Top scorer | Predict tournament's top goalscorer | Fixed bonus (e.g. 20 pts) |
-| Tournament winner | Predict which team wins | odds × 5 |
-| Group winner | Predict who tops a group | Fixed (e.g. 10 pts) |
-| Group second | Predict runner-up in a group | Fixed (e.g. 7 pts) |
-| Golden boot | Same as top scorer | — |
+| Bet Type          | Description                         | Points                    |
+| ----------------- | ----------------------------------- | ------------------------- |
+| Top scorer        | Predict tournament's top goalscorer | Fixed bonus (e.g. 20 pts) |
+| Tournament winner | Predict which team wins             | odds × 5                  |
+| Group winner      | Predict who tops a group            | Fixed (e.g. 10 pts)       |
+| Group second      | Predict runner-up in a group        | Fixed (e.g. 7 pts)        |
+| Golden boot       | Same as top scorer                  | —                         |
 
 Special bets are stored in `SpecialBet` table and settled manually by admin.
 These can be submitted once before the tournament starts and locked at tournament kickoff.

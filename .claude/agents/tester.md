@@ -11,6 +11,7 @@ You are a testing specialist for TipRoom — a tournament prediction app. You wr
 Read docs/testing.md for the full testing strategy, examples, and E2E flow descriptions before writing any tests.
 
 The most critical code to test:
+
 1. `lib/scoring.ts` — pure scoring functions, test all edge cases
 2. `lib/bet-validation.ts` — deadline enforcement
 3. Invite code generation

@@ -2,24 +2,26 @@
 
 ## Product Decisions (answered)
 
-| Question | Decision |
-|---|---|
-| Can users change their bet before the deadline? | Yes — last submission wins. Deadline is 1h before kickoff. |
-| Cancelled / postponed matches? | Admin handles manually in v1 (mark as CANCELLED/POSTPONED, no points awarded) |
-| Points unit | "Points" — no virtual coins |
-| Rooms after tournament ends | Persist — historical view stays accessible |
-| Special bets (top scorer, etc.) | Phase 3 feature |
+| Question                                        | Decision                                                                      |
+| ----------------------------------------------- | ----------------------------------------------------------------------------- |
+| Can users change their bet before the deadline? | Yes — last submission wins. Deadline is 1h before kickoff.                    |
+| Cancelled / postponed matches?                  | Admin handles manually in v1 (mark as CANCELLED/POSTPONED, no points awarded) |
+| Points unit                                     | "Points" — no virtual coins                                                   |
+| Rooms after tournament ends                     | Persist — historical view stays accessible                                    |
+| Special bets (top scorer, etc.)                 | Phase 3 feature                                                               |
 
 ---
 
 ## Phase 1 — MVP (before June 2026)
 
 ### Auth
+
 - [ ] Sign up / log in via Clerk (Google OAuth + email magic link)
 - [ ] User profile page (name, avatar)
 - [ ] Protected routes middleware
 
 ### Rooms
+
 - [ ] Create a room (name, pick tournament, pick scoring mode)
 - [ ] Invite code generated on creation (8-char alphanumeric)
 - [ ] Join a room via invite code
@@ -27,6 +29,7 @@
 - [ ] Room admin panel
 
 ### Matches
+
 - [ ] Admin manually adds matches (home team, away team, kickoff time)
 - [ ] Admin sets odds per match (optional — required for ODDS_BASED mode)
 - [ ] Matches auto-lock for betting 1h before kickoff (Vercel Cron)
@@ -35,6 +38,7 @@
 - [ ] Admin can mark match as CANCELLED or POSTPONED
 
 ### Betting
+
 - [ ] List of upcoming matches sorted by kickoff time
 - [ ] Submit bet (predicted score) for any unlocked match
 - [ ] Edit bet — last submission wins, same validation
@@ -42,12 +46,14 @@
 - [ ] View own past bets + earned points per match
 
 ### Leaderboard
+
 - [ ] Room leaderboard sorted by total points
 - [ ] Show position, name, points, number of correct predictions
 - [ ] Highlight current user's row
 - [ ] Refresh on focus (TanStack Query)
 
 ### Scheduling
+
 - [ ] Vercel Cron job every 5 minutes: lock bets for matches starting within 1h
 
 ---

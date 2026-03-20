@@ -9,23 +9,23 @@ A tournament prediction app for groups of friends. Starts with World Cup 2026, b
 
 ## Documentation
 
-| File | Contents |
-|---|---|
-| [docs/tech-stack.md](docs/tech-stack.md) | Framework, auth, database, deployment decisions |
-| [docs/data-model.md](docs/data-model.md) | Database schema, relationships, constraints |
-| [docs/scoring.md](docs/scoring.md) | Scoring system, modes, special bets |
-| [docs/features.md](docs/features.md) | All features by phase, answered product decisions |
-| [docs/testing.md](docs/testing.md) | Unit and E2E testing strategy and examples |
-| [docs/design.md](docs/design.md) | Colors, typography, component patterns, reference sites |
+| File                                     | Contents                                                |
+| ---------------------------------------- | ------------------------------------------------------- |
+| [docs/tech-stack.md](docs/tech-stack.md) | Framework, auth, database, deployment decisions         |
+| [docs/data-model.md](docs/data-model.md) | Database schema, relationships, constraints             |
+| [docs/scoring.md](docs/scoring.md)       | Scoring system, modes, special bets                     |
+| [docs/features.md](docs/features.md)     | All features by phase, answered product decisions       |
+| [docs/testing.md](docs/testing.md)       | Unit and E2E testing strategy and examples              |
+| [docs/design.md](docs/design.md)         | Colors, typography, component patterns, reference sites |
 
 ## Claude Agents
 
-| Agent | Purpose |
-|---|---|
-| `.claude/agents/developer.md` | Next.js / TypeScript / Prisma implementation |
-| `.claude/agents/tester.md` | Unit (Vitest) and E2E (Playwright) tests |
-| `.claude/agents/ui-designer.md` | Tailwind + shadcn/ui, mobile-first football UI |
-| `.claude/agents/manager.md` | Feature planning, updating docs, task breakdown |
+| Agent                           | Purpose                                         |
+| ------------------------------- | ----------------------------------------------- |
+| `.claude/agents/developer.md`   | Next.js / TypeScript / Prisma implementation    |
+| `.claude/agents/tester.md`      | Unit (Vitest) and E2E (Playwright) tests        |
+| `.claude/agents/ui-designer.md` | Tailwind + shadcn/ui, mobile-first football UI  |
+| `.claude/agents/manager.md`     | Feature planning, updating docs, task breakdown |
 
 ---
 

@@ -2,11 +2,11 @@
 
 ## Tools
 
-| Type | Tool | Config |
-|---|---|---|
-| Unit / Integration | **Vitest** | Fast, native TypeScript, compatible with Next.js |
-| E2E | **Playwright** | Cross-browser, great CI support |
-| Test DB | Supabase local or separate test schema | Never run tests against production |
+| Type               | Tool                                   | Config                                           |
+| ------------------ | -------------------------------------- | ------------------------------------------------ |
+| Unit / Integration | **Vitest**                             | Fast, native TypeScript, compatible with Next.js |
+| E2E                | **Playwright**                         | Cross-browser, great CI support                  |
+| Test DB            | Supabase local or separate test schema | Never run tests against production               |
 
 ## Setup
 
@@ -16,6 +16,7 @@ npx playwright install
 ```
 
 `vitest.config.ts`:
+
 ```typescript
 import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
@@ -23,7 +24,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   test: {
-    environment: 'node',        // 'jsdom' for component tests
+    environment: 'node', // 'jsdom' for component tests
     globals: true,
     setupFiles: ['./tests/setup.ts'],
   },
@@ -47,28 +48,65 @@ describe('calculatePoints — ODDS_BASED', () => {
   const base = { mode: 'ODDS_BASED' as const, odds: 2.15, config: undefined }
 
   it('exact score returns odds × 3', () => {
-    expect(calculatePoints({ ...base, predictedHome: 3, predictedAway: 0, actualHome: 3, actualAway: 0 }))
-      .toBeCloseTo(6.45)
+    expect(
+      calculatePoints({
+        ...base,
+        predictedHome: 3,
+        predictedAway: 0,
+        actualHome: 3,
+        actualAway: 0,
+      }),
+    ).toBeCloseTo(6.45)
   })
 
   it('correct winner wrong score returns odds × 1', () => {
-    expect(calculatePoints({ ...base, predictedHome: 2, predictedAway: 0, actualHome: 3, actualAway: 0 }))
-      .toBeCloseTo(2.15)
+    expect(
+      calculatePoints({
+        ...base,
+        predictedHome: 2,
+        predictedAway: 0,
+        actualHome: 3,
+        actualAway: 0,
+      }),
+    ).toBeCloseTo(2.15)
   })
 
   it('wrong result returns 0', () => {
-    expect(calculatePoints({ ...base, predictedHome: 0, predictedAway: 1, actualHome: 3, actualAway: 0 }))
-      .toBe(0)
+    expect(
+      calculatePoints({
+        ...base,
+        predictedHome: 0,
+        predictedAway: 1,
+        actualHome: 3,
+        actualAway: 0,
+      }),
+    ).toBe(0)
   })
 
   it('correct draw returns draw_odds × 1', () => {
-    expect(calculatePoints({ ...base, odds: 3.1, predictedHome: 1, predictedAway: 1, actualHome: 2, actualAway: 2 }))
-      .toBeCloseTo(3.1)
+    expect(
+      calculatePoints({
+        ...base,
+        odds: 3.1,
+        predictedHome: 1,
+        predictedAway: 1,
+        actualHome: 2,
+        actualAway: 2,
+      }),
+    ).toBeCloseTo(3.1)
   })
 
   it('exact draw returns draw_odds × 3', () => {
-    expect(calculatePoints({ ...base, odds: 3.1, predictedHome: 1, predictedAway: 1, actualHome: 1, actualAway: 1 }))
-      .toBeCloseTo(9.3)
+    expect(
+      calculatePoints({
+        ...base,
+        odds: 3.1,
+        predictedHome: 1,
+        predictedAway: 1,
+        actualHome: 1,
+        actualAway: 1,
+      }),
+    ).toBeCloseTo(9.3)
   })
 })
 
@@ -76,15 +114,39 @@ describe('calculatePoints — FIXED', () => {
   const base = { mode: 'FIXED' as const, odds: 2.15, config: undefined }
 
   it('exact score = 5 pts', () => {
-    expect(calculatePoints({ ...base, predictedHome: 3, predictedAway: 0, actualHome: 3, actualAway: 0 })).toBe(5)
+    expect(
+      calculatePoints({
+        ...base,
+        predictedHome: 3,
+        predictedAway: 0,
+        actualHome: 3,
+        actualAway: 0,
+      }),
+    ).toBe(5)
   })
 
   it('correct winner = 2 pts', () => {
-    expect(calculatePoints({ ...base, predictedHome: 1, predictedAway: 0, actualHome: 3, actualAway: 0 })).toBe(2)
+    expect(
+      calculatePoints({
+        ...base,
+        predictedHome: 1,
+        predictedAway: 0,
+        actualHome: 3,
+        actualAway: 0,
+      }),
+    ).toBe(2)
   })
 
   it('correct draw (wrong score) = 3 pts', () => {
-    expect(calculatePoints({ ...base, predictedHome: 1, predictedAway: 1, actualHome: 2, actualAway: 2 })).toBe(3)
+    expect(
+      calculatePoints({
+        ...base,
+        predictedHome: 1,
+        predictedAway: 1,
+        actualHome: 2,
+        actualAway: 2,
+      }),
+    ).toBe(3)
   })
 })
 ```
@@ -127,6 +189,7 @@ it('generates unique codes', () => {
 All E2E tests run against a test database with seeded data.
 
 ### Flow 1: User registration and room creation
+
 ```
 1. Visit /
 2. Click "Sign up"
@@ -139,6 +202,7 @@ All E2E tests run against a test database with seeded data.
 ```
 
 ### Flow 2: Join a room and place a bet
+
 ```
 1. Sign in as second user
 2. Visit /join, enter invite code
@@ -151,6 +215,7 @@ All E2E tests run against a test database with seeded data.
 ```
 
 ### Flow 3: Admin enters result and leaderboard updates
+
 ```
 1. Sign in as room admin
 2. Go to /rooms/[slug]/admin
@@ -163,6 +228,7 @@ All E2E tests run against a test database with seeded data.
 ```
 
 ### Flow 4: Bet locked before kickoff (critical)
+
 ```
 1. Match has betsLockedAt = 30 minutes ago
 2. User visits match

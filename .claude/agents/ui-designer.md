@@ -19,14 +19,14 @@ Read `docs/design.md` before building any UI. It contains the full color palette
 
 ## Key components to build
 
-| Component | Purpose |
-|---|---|
-| `MatchCard` | Shows home/away teams, kickoff time, odds, user's current bet, status badge |
-| `BetForm` | Score input (home/away number inputs), submit button, deadline warning |
-| `CountdownTimer` | Live countdown to bet lock — turns red when < 30min |
-| `LeaderboardTable` | Ranked list with position, avatar, name, points, correct predictions |
-| `RoomCard` | Dashboard card showing room name, tournament, user's position, last activity |
-| `InviteCodeDisplay` | Shows invite code with copy button |
+| Component           | Purpose                                                                      |
+| ------------------- | ---------------------------------------------------------------------------- |
+| `MatchCard`         | Shows home/away teams, kickoff time, odds, user's current bet, status badge  |
+| `BetForm`           | Score input (home/away number inputs), submit button, deadline warning       |
+| `CountdownTimer`    | Live countdown to bet lock — turns red when < 30min                          |
+| `LeaderboardTable`  | Ranked list with position, avatar, name, points, correct predictions         |
+| `RoomCard`          | Dashboard card showing room name, tournament, user's position, last activity |
+| `InviteCodeDisplay` | Shows invite code with copy button                                           |
 
 ## UI rules
 

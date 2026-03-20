@@ -34,6 +34,7 @@ npx prisma generate               # regenerate client after schema change
 - **TanStack Query** — client-side data fetching and caching
 
 Key files:
+
 - `lib/scoring.ts` — pure scoring functions, no DB calls. The most critical business logic.
 - `lib/bet-validation.ts` — deadline enforcement (always server-side)
 - `docs/data-model.md` — full Prisma schema with constraints
@@ -56,16 +57,17 @@ Key files:
 
 ## MCP Servers (global)
 
-| Server | Purpose | Usage |
-|---|---|---|
-| `context7` | Up-to-date docs for Next.js, Prisma, Clerk, shadcn | Mention "use context7" in your prompt |
-| `chrome-devtools` | Inspect DOM, console, network, screenshots | Run `chrome-dev` in terminal first, then ask Claude to inspect |
+| Server            | Purpose                                            | Usage                                                          |
+| ----------------- | -------------------------------------------------- | -------------------------------------------------------------- |
+| `context7`        | Up-to-date docs for Next.js, Prisma, Clerk, shadcn | Mention "use context7" in your prompt                          |
+| `chrome-devtools` | Inspect DOM, console, network, screenshots         | Run `chrome-dev` in terminal first, then ask Claude to inspect |
 
 `chrome-dev` alias launches Chrome with remote debugging on port 9222 — required before using the chrome-devtools MCP.
 
 ## Agents
 
 Custom agents in `.claude/agents/` have full project context baked in:
+
 - `developer` — feature implementation
 - `tester` — Vitest unit tests and Playwright e2e
 - `ui-designer` — Tailwind/shadcn, mobile-first football UI

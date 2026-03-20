@@ -68,7 +68,12 @@ export function calculatePoints(input: CalculatePointsInput): number {
   const effectiveHomeOdds = homeOdds ?? 1.0
   const effectiveAwayOdds = awayOdds ?? 1.0
   const effectiveDrawOdds = drawOdds ?? 1.0
-  const odds = getRelevantOdds(actualWinner, effectiveHomeOdds, effectiveAwayOdds, effectiveDrawOdds)
+  const odds = getRelevantOdds(
+    actualWinner,
+    effectiveHomeOdds,
+    effectiveAwayOdds,
+    effectiveDrawOdds,
+  )
 
   if (mode === ScoringMode.ODDS_BASED) {
     if (isExact) return odds * (config?.exactMultiplier ?? 3)

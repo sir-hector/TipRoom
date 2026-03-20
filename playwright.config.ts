@@ -1,5 +1,4 @@
 import { defineConfig, devices } from '@playwright/test'
-import { clerkSetup } from '@clerk/testing/playwright'
 
 export default defineConfig({
   testDir: './tests/e2e',

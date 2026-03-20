@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 
-async function signIn(page: any) {
+async function signIn(page: ReturnType<typeof import('@playwright/test').test.info>) {
   await page.goto('/sign-in')
   // Step 1: email
   await page.getByLabel(/email address/i).fill(process.env.E2E_TEST_EMAIL!)
