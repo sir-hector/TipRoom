@@ -1,5 +1,6 @@
 import { UserButton } from '@clerk/nextjs'
 import Link from 'next/link'
+import { Providers } from '@/components/providers'
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -13,7 +14,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           <UserButton />
         </div>
       </nav>
-      {children}
+      <Providers>{children}</Providers>
     </div>
   )
 }

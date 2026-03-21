@@ -104,6 +104,35 @@ export async function getTournaments() {
   })
 }
 
+export async function getLeaderboard(roomId: string) {
+  const members = await db.roomMember.findMany({
+    where: { roomId },
+    include: {
+      user: { select: { id: true, name: true, avatarUrl: true } },
+    },
+  })
+
+  const bets = await db.bet.findMany({
+    where: { roomId, pointsEarned: { not: null } },
+    select: { userId: true, pointsEarned: true },
+  })
+
+  const rows = members.map((member) => {
+    const userBets = bets.filter((b) => b.userId === member.userId)
+    const totalPoints = userBets.reduce((sum, b) => sum + (b.pointsEarned ?? 0), 0)
+    const correctPredictions = userBets.filter((b) => (b.pointsEarned ?? 0) > 0).length
+    return {
+      userId: member.userId,
+      name: member.user.name,
+      avatarUrl: member.user.avatarUrl,
+      totalPoints,
+      correctPredictions,
+    }
+  })
+
+  return rows.sort((a, b) => b.totalPoints - a.totalPoints)
+}
+
 export async function getRoomData(slug: string) {
   const user = await getCurrentUser()
 

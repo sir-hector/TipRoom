@@ -47,6 +47,22 @@ export default async function RoomPage({ params }: { params: Promise<{ slug: str
         </div>
       </div>
 
+      {/* Tab navigation */}
+      <div className="mb-4 flex gap-1 border-b">
+        <Link
+          href={`/rooms/${room.slug}`}
+          className="border-primary text-primary border-b-2 px-4 py-2 text-sm font-medium"
+        >
+          Matches
+        </Link>
+        <Link
+          href={`/rooms/${room.slug}/leaderboard`}
+          className="text-muted-foreground hover:text-foreground px-4 py-2 text-sm font-medium"
+        >
+          Leaderboard
+        </Link>
+      </div>
+
       {/* Match list */}
       {matches.length === 0 ? (
         <p className="text-muted-foreground py-12 text-center">
