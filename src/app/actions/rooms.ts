@@ -3,9 +3,21 @@
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { ScoringMode } from '@prisma/client'
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
+import { z } from 'zod'
 import { getCurrentUser } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { generateInviteCode } from '@/lib/invite'
+
+const CreateRoomSchema = z.object({
+  name: z.string().min(1).max(100),
+  tournamentId: z.string().min(1),
+  scoringMode: z.enum(['ODDS_BASED', 'FIXED']),
+})
+
+const JoinRoomSchema = z.object({
+  inviteCode: z.string().min(1).max(20),
+})
 
 function createSlug(name: string): string {
   return name
@@ -43,60 +55,94 @@ export async function getUserRooms() {
 }
 
 export async function createRoom(_prev: unknown, formData: FormData): Promise<{ error: string }> {
-  const name = formData.get('name') as string
-  const tournamentId = formData.get('tournamentId') as string
-  const scoringMode = (formData.get('scoringMode') as ScoringMode) ?? ScoringMode.ODDS_BASED
-
-  if (!name?.trim()) return { error: 'Room name is required.' }
-  if (!tournamentId) return { error: 'Please select a tournament.' }
+  const parsed = CreateRoomSchema.safeParse({
+    name: formData.get('name'),
+    tournamentId: formData.get('tournamentId'),
+    scoringMode: formData.get('scoringMode') ?? 'ODDS_BASED',
+  })
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? 'Invalid input.' }
+  const { name, tournamentId, scoringMode } = parsed.data
 
   const user = await getCurrentUser()
 
-  const slug = await ensureUniqueSlug(createSlug(name.trim()))
+  const slug = createSlug(name.trim())
+  if (slug === '') return { error: 'Room name must contain at least one letter or number.' }
+
+  const uniqueSlug = await ensureUniqueSlug(slug)
   const inviteCode = generateInviteCode()
 
-  const room = await db.room.create({
-    data: {
-      name: name.trim(),
-      slug,
-      tournamentId,
-      scoringMode,
-      inviteCode,
-      createdBy: user.id,
-      members: {
-        create: { userId: user.id, role: 'ADMIN' },
+  try {
+    const room = await db.room.create({
+      data: {
+        name: name.trim(),
+        slug: uniqueSlug,
+        tournamentId,
+        scoringMode: scoringMode as ScoringMode,
+        inviteCode,
+        createdBy: user.id,
+        members: {
+          create: { userId: user.id, role: 'ADMIN' },
+        },
       },
-    },
-  })
+    })
 
-  revalidatePath('/dashboard')
-  redirect(`/rooms/${room.slug}`)
+    revalidatePath('/dashboard')
+    redirect(`/rooms/${room.slug}`)
+  } catch (err) {
+    if (
+      err instanceof PrismaClientKnownRequestError &&
+      err.code === 'P2002' &&
+      Array.isArray(err.meta?.target) &&
+      (err.meta.target as string[]).includes('slug')
+    ) {
+      const suffix = Math.floor(1000 + Math.random() * 9000)
+      const retrySlug = `${uniqueSlug}-${suffix}`
+      const room = await db.room.create({
+        data: {
+          name: name.trim(),
+          slug: retrySlug,
+          tournamentId,
+          scoringMode: scoringMode as ScoringMode,
+          inviteCode,
+          createdBy: user.id,
+          members: {
+            create: { userId: user.id, role: 'ADMIN' },
+          },
+        },
+      })
+
+      revalidatePath('/dashboard')
+      redirect(`/rooms/${room.slug}`)
+    }
+    throw err
+  }
 }
 
 export async function joinRoom(_prev: unknown, formData: FormData): Promise<{ error: string }> {
-  const inviteCode = (formData.get('inviteCode') as string)?.trim().toUpperCase()
-  if (!inviteCode) return { error: 'Please enter an invite code.' }
+  const parsed = JoinRoomSchema.safeParse({
+    inviteCode: (formData.get('inviteCode') as string)?.trim().toUpperCase(),
+  })
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? 'Invalid input.' }
+  const { inviteCode } = parsed.data
 
   const user = await getCurrentUser()
 
   const room = await db.room.findUnique({ where: { inviteCode } })
   if (!room) return { error: 'Room not found. Check the invite code and try again.' }
 
-  const existing = await db.roomMember.findUnique({
+  await db.roomMember.upsert({
     where: { roomId_userId: { roomId: room.id, userId: user.id } },
+    update: {},
+    create: { roomId: room.id, userId: user.id, role: 'MEMBER' },
   })
-
-  if (!existing) {
-    await db.roomMember.create({
-      data: { roomId: room.id, userId: user.id, role: 'MEMBER' },
-    })
-    revalidatePath('/dashboard')
-  }
+  revalidatePath('/dashboard')
 
   redirect(`/rooms/${room.slug}`)
 }
 
 export async function getTournaments() {
+  await getCurrentUser()
+
   return db.tournament.findMany({
     where: { isActive: true },
     select: { id: true, name: true },
@@ -105,30 +151,43 @@ export async function getTournaments() {
 }
 
 export async function getLeaderboard(roomId: string) {
+  const user = await getCurrentUser()
+
+  // verify caller is a member
+  const membership = await db.roomMember.findUnique({
+    where: { roomId_userId: { roomId, userId: user.id } },
+  })
+  if (!membership) throw new Error('Not a member of this room')
+
   const members = await db.roomMember.findMany({
     where: { roomId },
-    include: {
-      user: { select: { id: true, name: true, avatarUrl: true } },
-    },
+    include: { user: { select: { id: true, name: true, avatarUrl: true } } },
   })
 
-  const bets = await db.bet.findMany({
+  const grouped = await db.bet.groupBy({
+    by: ['userId'],
     where: { roomId, pointsEarned: { not: null } },
-    select: { userId: true, pointsEarned: true },
+    _sum: { pointsEarned: true },
+    _count: { _all: true },
   })
 
-  const rows = members.map((member) => {
-    const userBets = bets.filter((b) => b.userId === member.userId)
-    const totalPoints = userBets.reduce((sum, b) => sum + (b.pointsEarned ?? 0), 0)
-    const correctPredictions = userBets.filter((b) => (b.pointsEarned ?? 0) > 0).length
-    return {
-      userId: member.userId,
-      name: member.user.name,
-      avatarUrl: member.user.avatarUrl,
-      totalPoints,
-      correctPredictions,
-    }
+  // count correct predictions (pointsEarned > 0)
+  const correct = await db.bet.groupBy({
+    by: ['userId'],
+    where: { roomId, pointsEarned: { gt: 0 } },
+    _count: { _all: true },
   })
+
+  const correctMap = new Map(correct.map((r) => [r.userId, r._count._all]))
+  const pointsMap = new Map(grouped.map((r) => [r.userId, r._sum.pointsEarned ?? 0]))
+
+  const rows = members.map((m) => ({
+    userId: m.userId,
+    name: m.user.name,
+    avatarUrl: m.user.avatarUrl,
+    totalPoints: pointsMap.get(m.userId) ?? 0,
+    correctPredictions: correctMap.get(m.userId) ?? 0,
+  }))
 
   return rows.sort((a, b) => b.totalPoints - a.totalPoints)
 }
@@ -149,21 +208,22 @@ export async function getRoomData(slug: string) {
 
   if (!room || room.members.length === 0) return null
 
-  const matches = await db.match.findMany({
-    where: { tournamentId: room.tournamentId },
-    orderBy: { kickoffAt: 'asc' },
-  })
-
-  const bets = await db.bet.findMany({
-    where: { roomId: room.id, userId: user.id },
-    select: {
-      matchId: true,
-      predictedHome: true,
-      predictedAway: true,
-      pointsEarned: true,
-      oddsUsed: true,
-    },
-  })
+  const [matches, bets] = await Promise.all([
+    db.match.findMany({
+      where: { tournamentId: room.tournamentId },
+      orderBy: { kickoffAt: 'asc' },
+    }),
+    db.bet.findMany({
+      where: { roomId: room.id, userId: user.id },
+      select: {
+        matchId: true,
+        predictedHome: true,
+        predictedAway: true,
+        pointsEarned: true,
+        oddsUsed: true,
+      },
+    }),
+  ])
 
   return {
     room: {

@@ -77,6 +77,10 @@ export function EditOddsForm({
         </div>
       </div>
 
+      {state && 'error' in state && state.error && (
+        <p className="text-sm text-red-500">{state.error}</p>
+      )}
+
       {state && 'success' in state && state.success && (
         <p className="text-sm font-medium text-green-600">Saved!</p>
       )}

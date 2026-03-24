@@ -92,6 +92,7 @@ export function MatchCard({ match, roomId, roomSlug }: MatchCardProps) {
   const [home, setHome] = useState<number>(match.bet?.predictedHome ?? 0)
   const [away, setAway] = useState<number>(match.bet?.predictedAway ?? 0)
   const [state, formAction] = useActionState(placeBet, null)
+  const [isExpired, setIsExpired] = useState(() => new Date(match.betsLockedAt) <= new Date())
 
   const isActive = match.status === 'SCHEDULED'
   const isFinished = match.status === 'FINISHED'
@@ -115,7 +116,12 @@ export function MatchCard({ match, roomId, roomSlug }: MatchCardProps) {
           </span>
           <div className="flex flex-col items-end gap-0.5">
             <span className="text-muted-foreground text-xs">{formatKickoff(match.kickoffAt)}</span>
-            {isActive && <CountdownTimer betsLockedAt={match.betsLockedAt} />}
+            {isActive && (
+              <CountdownTimer
+                betsLockedAt={match.betsLockedAt}
+                onExpire={() => setIsExpired(true)}
+              />
+            )}
           </div>
         </div>
 
@@ -168,8 +174,13 @@ export function MatchCard({ match, roomId, roomSlug }: MatchCardProps) {
           </div>
         )}
 
+        {/* Active but expired client-side: betting closed */}
+        {isActive && isExpired && (
+          <p className="text-muted-foreground text-center text-sm">Betting closed</p>
+        )}
+
         {/* Active: bet form */}
-        {isActive && (
+        {isActive && !isExpired && (
           <form action={formAction} className="flex flex-col gap-3">
             <input type="hidden" name="roomId" value={roomId} />
             <input type="hidden" name="roomSlug" value={roomSlug} />

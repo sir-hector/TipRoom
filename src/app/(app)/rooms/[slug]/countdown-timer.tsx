@@ -1,7 +1,13 @@
 'use client'
 import { useState, useEffect } from 'react'
 
-export function CountdownTimer({ betsLockedAt }: { betsLockedAt: Date }) {
+export function CountdownTimer({
+  betsLockedAt,
+  onExpire,
+}: {
+  betsLockedAt: Date
+  onExpire?: () => void
+}) {
   const [display, setDisplay] = useState('')
   const [color, setColor] = useState('text-muted-foreground')
 
@@ -10,7 +16,8 @@ export function CountdownTimer({ betsLockedAt }: { betsLockedAt: Date }) {
       const diff = new Date(betsLockedAt).getTime() - Date.now()
       if (diff <= 0) {
         setDisplay('')
-        return
+        onExpire?.()
+        return true // signal: stop interval
       }
 
       const h = Math.floor(diff / 3600000)
@@ -28,11 +35,15 @@ export function CountdownTimer({ betsLockedAt }: { betsLockedAt: Date }) {
             ? 'text-amber-500'
             : 'text-muted-foreground',
       )
+      return false
     }
-    update()
-    const id = setInterval(update, 1000)
+
+    if (update()) return // already expired, don't start interval
+    const id = setInterval(() => {
+      if (update()) clearInterval(id)
+    }, 1000)
     return () => clearInterval(id)
-  }, [betsLockedAt])
+  }, [betsLockedAt, onExpire])
 
   if (!display) return null
 
