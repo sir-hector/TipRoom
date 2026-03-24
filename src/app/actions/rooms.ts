@@ -3,7 +3,7 @@
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { ScoringMode } from '@prisma/client'
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
+import { Prisma } from '@prisma/client'
 import { z } from 'zod'
 import { getCurrentUser } from '@/lib/auth'
 import { db } from '@/lib/db'
@@ -90,7 +90,7 @@ export async function createRoom(_prev: unknown, formData: FormData): Promise<{ 
     redirect(`/rooms/${room.slug}`)
   } catch (err) {
     if (
-      err instanceof PrismaClientKnownRequestError &&
+      err instanceof Prisma.PrismaClientKnownRequestError &&
       err.code === 'P2002' &&
       Array.isArray(err.meta?.target) &&
       (err.meta.target as string[]).includes('slug')
