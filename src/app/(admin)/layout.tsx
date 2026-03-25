@@ -2,6 +2,7 @@ import { isAppAdmin } from '@/lib/auth'
 import { UserButton } from '@clerk/nextjs'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
+import { Logo } from '@/components/logo'
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   if (!(await isAppAdmin())) redirect('/dashboard')
@@ -12,7 +13,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <div className="container mx-auto flex h-14 items-center justify-between px-4">
           <div className="flex items-center gap-6">
             <Link href="/dashboard" className="flex items-center gap-2 font-semibold">
-              <span>⚽</span>
+              <Logo />
               <span>TipRoom</span>
             </Link>
             <Link
