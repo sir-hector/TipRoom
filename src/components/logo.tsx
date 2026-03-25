@@ -9,84 +9,31 @@ export function Logo({ size = 28 }: { size?: number }) {
       aria-hidden
     >
       <defs>
-        <linearGradient id="logo-bg" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#4ade80" />
-          <stop offset="100%" stopColor="#15803d" />
-        </linearGradient>
+        <clipPath id="logo-ball">
+          <circle cx="20" cy="20" r="11" />
+        </clipPath>
       </defs>
 
-      {/* Background */}
-      <rect width="40" height="40" rx="10" fill="url(#logo-bg)" />
+      {/* Dark background */}
+      <rect width="40" height="40" rx="10" fill="#0f172a" />
 
-      {/* Football outer circle */}
-      <circle cx="20" cy="20" r="11.5" stroke="white" strokeWidth="1.5" strokeOpacity="0.35" />
+      {/* White ball */}
+      <circle cx="20" cy="20" r="11" fill="white" />
 
-      {/* Centre pentagon */}
-      <polygon
-        points="20,14.5 23.8,17 23.8,21.5 20,24 16.2,21.5 16.2,17"
-        fill="white"
-        fillOpacity="0.15"
-      />
+      {/* Football pattern clipped to ball */}
+      <g clipPath="url(#logo-ball)">
+        {/* Centre pentagon */}
+        <polygon points="20,15.5 24.3,18.6 22.7,23.6 17.3,23.6 15.7,18.6" fill="#0f172a" />
+        {/* Seam lines */}
+        <line x1="20" y1="15.5" x2="20" y2="8" stroke="#0f172a" strokeWidth="1.3" />
+        <line x1="24.3" y1="18.6" x2="31" y2="16.4" stroke="#0f172a" strokeWidth="1.3" />
+        <line x1="22.7" y1="23.6" x2="27" y2="29.5" stroke="#0f172a" strokeWidth="1.3" />
+        <line x1="17.3" y1="23.6" x2="13" y2="29.5" stroke="#0f172a" strokeWidth="1.3" />
+        <line x1="15.7" y1="18.6" x2="9" y2="16.4" stroke="#0f172a" strokeWidth="1.3" />
+      </g>
 
-      {/* Top-right arm */}
-      <line
-        x1="23.8"
-        y1="17"
-        x2="27.5"
-        y2="14.5"
-        stroke="white"
-        strokeWidth="1.2"
-        strokeOpacity="0.25"
-      />
-      {/* Top-left arm */}
-      <line
-        x1="16.2"
-        y1="17"
-        x2="12.5"
-        y2="14.5"
-        stroke="white"
-        strokeWidth="1.2"
-        strokeOpacity="0.25"
-      />
-      {/* Bottom-right arm */}
-      <line
-        x1="23.8"
-        y1="21.5"
-        x2="27"
-        y2="24.5"
-        stroke="white"
-        strokeWidth="1.2"
-        strokeOpacity="0.25"
-      />
-      {/* Bottom-left arm */}
-      <line
-        x1="16.2"
-        y1="21.5"
-        x2="13"
-        y2="24.5"
-        stroke="white"
-        strokeWidth="1.2"
-        strokeOpacity="0.25"
-      />
-      {/* Top arm */}
-      <line
-        x1="20"
-        y1="14.5"
-        x2="20"
-        y2="10"
-        stroke="white"
-        strokeWidth="1.2"
-        strokeOpacity="0.25"
-      />
-
-      {/* Checkmark — bold, centred */}
-      <path
-        d="M13 20.5L17.5 25L27 15"
-        stroke="white"
-        strokeWidth="3"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      {/* Ball outline */}
+      <circle cx="20" cy="20" r="11" stroke="#0f172a" strokeWidth="1" strokeOpacity="0.15" />
     </svg>
   )
 }
