@@ -30,20 +30,7 @@ export default async function DashboardPage() {
 
   return (
     <main className="container mx-auto px-4 py-8">
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold">Your Rooms</h1>
-        <div className="flex gap-2">
-          <Link
-            href="/rooms/join"
-            className={cn(buttonVariants({ variant: 'outline', size: 'sm' }))}
-          >
-            Join Room
-          </Link>
-          <Link href="/rooms/new" className={cn(buttonVariants({ size: 'sm' }))}>
-            + Create Room
-          </Link>
-        </div>
-      </div>
+      <h1 className="mb-6 text-2xl font-bold">Your Rooms</h1>
 
       {rooms.length === 0 ? (
         <div className="flex flex-col items-center gap-4 py-20 text-center">
