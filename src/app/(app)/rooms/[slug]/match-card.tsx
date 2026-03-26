@@ -7,6 +7,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { CountdownTimer } from './countdown-timer'
+import { getTeamFlag } from '@/components/team-combobox'
 
 type Bet = {
   matchId: string
@@ -127,7 +128,10 @@ export function MatchCard({ match, roomId, roomSlug }: MatchCardProps) {
 
         {/* Teams row */}
         <div className="flex items-center justify-center gap-3 py-1">
-          <span className="flex-1 text-right text-lg font-semibold">{match.homeTeam}</span>
+          <span className="flex flex-1 items-center justify-end gap-1.5 text-lg font-semibold">
+            {match.homeTeam}
+            <span className="text-xl leading-none">{getTeamFlag(match.homeTeam)}</span>
+          </span>
           {isFinished && match.homeScore !== null && match.awayScore !== null ? (
             <span className="font-mono text-2xl font-bold tabular-nums">
               {match.homeScore} – {match.awayScore}
@@ -135,7 +139,10 @@ export function MatchCard({ match, roomId, roomSlug }: MatchCardProps) {
           ) : (
             <span className="text-muted-foreground text-sm font-medium">vs</span>
           )}
-          <span className="flex-1 text-left text-lg font-semibold">{match.awayTeam}</span>
+          <span className="flex flex-1 items-center gap-1.5 text-lg font-semibold">
+            <span className="text-xl leading-none">{getTeamFlag(match.awayTeam)}</span>
+            {match.awayTeam}
+          </span>
         </div>
 
         {/* Odds row (when available and not finished/cancelled/postponed) */}
