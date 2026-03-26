@@ -5,7 +5,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { useActionState } from 'react'
+import { useState, useActionState } from 'react'
 import { useFormStatus } from 'react-dom'
 
 function SubmitButton() {
@@ -31,6 +31,11 @@ interface AddMatchFormProps {
 
 export function AddMatchForm({ tournamentId, tournamentSlug, teams }: AddMatchFormProps) {
   const [state, formAction] = useActionState(createMatch, null)
+  const [homeTeamId, setHomeTeamId] = useState('')
+  const [awayTeamId, setAwayTeamId] = useState('')
+
+  const selectClass =
+    'border-input bg-background ring-offset-background focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none'
 
   return (
     <form action={formAction} className="flex flex-col gap-5">
@@ -49,14 +54,18 @@ export function AddMatchForm({ tournamentId, tournamentSlug, teams }: AddMatchFo
           id="homeTeamId"
           name="homeTeamId"
           required
-          className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+          value={homeTeamId}
+          onChange={(e) => setHomeTeamId(e.target.value)}
+          className={selectClass}
         >
           <option value="">Select home team…</option>
-          {teams.map((t) => (
-            <option key={t.id} value={t.id}>
-              {t.name}
-            </option>
-          ))}
+          {teams
+            .filter((t) => t.id !== awayTeamId)
+            .map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.name}
+              </option>
+            ))}
         </select>
       </div>
 
@@ -66,14 +75,18 @@ export function AddMatchForm({ tournamentId, tournamentSlug, teams }: AddMatchFo
           id="awayTeamId"
           name="awayTeamId"
           required
-          className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+          value={awayTeamId}
+          onChange={(e) => setAwayTeamId(e.target.value)}
+          className={selectClass}
         >
           <option value="">Select away team…</option>
-          {teams.map((t) => (
-            <option key={t.id} value={t.id}>
-              {t.name}
-            </option>
-          ))}
+          {teams
+            .filter((t) => t.id !== homeTeamId)
+            .map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.name}
+              </option>
+            ))}
         </select>
       </div>
 

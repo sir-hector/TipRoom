@@ -13,7 +13,7 @@ const CreateMatchSchema = z.object({
   tournamentId: z.string().min(1),
   homeTeamId: z.string().min(1),
   awayTeamId: z.string().min(1),
-  kickoffAt: z.string().datetime(),
+  kickoffAt: z.coerce.date(),
   homeOdds: z.coerce.number().positive().optional(),
   awayOdds: z.coerce.number().positive().optional(),
   drawOdds: z.coerce.number().positive().optional(),
@@ -66,7 +66,7 @@ export async function createMatch(_prev: unknown, formData: FormData): Promise<{
   const homeTeamRecord = teamLinks.find((t) => t.teamId === homeTeamId)!.team
   const awayTeamRecord = teamLinks.find((t) => t.teamId === awayTeamId)!.team
 
-  const kickoffDate = new Date(kickoffAt)
+  const kickoffDate = kickoffAt
   const betsLockedAt = new Date(kickoffDate.getTime() - 60 * 60 * 1000)
 
   await db.match.create({
