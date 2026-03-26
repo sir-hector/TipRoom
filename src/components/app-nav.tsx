@@ -33,7 +33,7 @@ function ThemeToggle() {
   return (
     <button
       onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
-      className="flex h-8 w-8 items-center justify-center rounded-md text-slate-400 transition-colors hover:bg-white/10 hover:text-white"
+      className="text-muted-foreground hover:bg-muted hover:text-foreground flex h-8 w-8 items-center justify-center rounded-md transition-colors"
       aria-label="Toggle theme"
     >
       <SunIcon className="h-4 w-4 dark:hidden" />
@@ -56,19 +56,19 @@ export function AppNav({ isAdmin }: AppNavProps) {
       {/* Desktop sidebar */}
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-30 hidden flex-col bg-slate-950 transition-[width] duration-300 ease-in-out md:flex',
+          'bg-background border-border fixed inset-y-0 left-0 z-30 hidden flex-col border-r transition-[width] duration-300 ease-in-out md:flex',
           collapsed ? 'w-14' : 'w-56',
         )}
       >
         {/* Logo header */}
         <div
           className={cn(
-            'flex h-14 shrink-0 items-center border-b border-white/10 transition-all duration-300',
+            'border-border flex h-14 shrink-0 items-center border-b transition-all duration-300',
             collapsed ? 'justify-center px-0' : 'gap-2.5 px-4',
           )}
         >
           <Logo />
-          {!collapsed && <span className="font-semibold text-white">TipRoom</span>}
+          {!collapsed && <span className="text-foreground font-semibold">TipRoom</span>}
         </div>
 
         {/* Nav items */}
@@ -84,8 +84,8 @@ export function AppNav({ isAdmin }: AppNavProps) {
                   'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
                   collapsed ? 'justify-center' : '',
                   active
-                    ? 'bg-primary/20 text-primary'
-                    : 'text-slate-400 hover:bg-white/8 hover:text-white',
+                    ? 'bg-primary/10 text-primary'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground',
                 )}
               >
                 <Icon className="h-4 w-4 shrink-0" />
@@ -98,7 +98,7 @@ export function AppNav({ isAdmin }: AppNavProps) {
         {/* Footer */}
         <div
           className={cn(
-            'flex shrink-0 items-center border-t border-white/10 p-3',
+            'border-border flex shrink-0 items-center border-t p-3',
             collapsed ? 'flex-col gap-2' : 'justify-between',
           )}
         >
@@ -106,7 +106,7 @@ export function AppNav({ isAdmin }: AppNavProps) {
           <ThemeToggle />
           <button
             onClick={toggle}
-            className="flex h-8 w-8 items-center justify-center rounded-md text-slate-400 transition-colors hover:bg-white/10 hover:text-white"
+            className="text-muted-foreground hover:bg-muted hover:text-foreground flex h-8 w-8 items-center justify-center rounded-md transition-colors"
             aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           >
             {collapsed ? (
