@@ -2,11 +2,21 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { HomeIcon, PlusCircleIcon, LogInIcon, ShieldIcon, SunIcon, MoonIcon } from 'lucide-react'
+import {
+  HomeIcon,
+  PlusCircleIcon,
+  LogInIcon,
+  ShieldIcon,
+  SunIcon,
+  MoonIcon,
+  PanelLeftCloseIcon,
+  PanelLeftOpenIcon,
+} from 'lucide-react'
 import { UserButton } from '@clerk/nextjs'
 import { Logo } from '@/components/logo'
 import { cn } from '@/lib/utils'
 import { useTheme } from 'next-themes'
+import { useSidebar } from './sidebar-context'
 
 const BASE_ITEMS = [
   { href: '/dashboard', icon: HomeIcon, label: 'Dashboard' },
@@ -34,6 +44,7 @@ function ThemeToggle() {
 
 export function AppNav({ isAdmin }: AppNavProps) {
   const pathname = usePathname()
+  const { collapsed, toggle } = useSidebar()
 
   const items = [
     ...BASE_ITEMS,
@@ -42,37 +53,68 @@ export function AppNav({ isAdmin }: AppNavProps) {
 
   return (
     <>
-      {/* Desktop sidebar — always dark */}
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-56 flex-col bg-slate-950 md:flex">
-        <div className="flex h-14 items-center gap-2.5 border-b border-white/10 px-4">
+      {/* Desktop sidebar */}
+      <aside
+        className={cn(
+          'fixed inset-y-0 left-0 z-30 hidden flex-col bg-slate-950 transition-[width] duration-300 ease-in-out md:flex',
+          collapsed ? 'w-14' : 'w-56',
+        )}
+      >
+        {/* Logo header */}
+        <div
+          className={cn(
+            'flex h-14 shrink-0 items-center border-b border-white/10 transition-all duration-300',
+            collapsed ? 'justify-center px-0' : 'gap-2.5 px-4',
+          )}
+        >
           <Logo />
-          <span className="font-semibold text-white">TipRoom</span>
+          {!collapsed && <span className="font-semibold text-white">TipRoom</span>}
         </div>
 
-        <nav className="flex flex-1 flex-col gap-0.5 p-3 pt-4">
+        {/* Nav items */}
+        <nav className="flex flex-1 flex-col gap-0.5 overflow-hidden p-2 pt-3">
           {items.map(({ href, icon: Icon, label }) => {
             const active = href === '/admin' ? pathname.startsWith('/admin') : pathname === href
             return (
               <Link
                 key={href}
                 href={href}
+                title={collapsed ? label : undefined}
                 className={cn(
                   'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
+                  collapsed ? 'justify-center' : '',
                   active
                     ? 'bg-primary/20 text-primary'
                     : 'text-slate-400 hover:bg-white/8 hover:text-white',
                 )}
               >
                 <Icon className="h-4 w-4 shrink-0" />
-                {label}
+                {!collapsed && <span className="truncate">{label}</span>}
               </Link>
             )
           })}
         </nav>
 
-        <div className="flex items-center justify-between border-t border-white/10 p-4">
+        {/* Footer */}
+        <div
+          className={cn(
+            'flex shrink-0 items-center border-t border-white/10 p-3',
+            collapsed ? 'flex-col gap-2' : 'justify-between',
+          )}
+        >
           <UserButton />
           <ThemeToggle />
+          <button
+            onClick={toggle}
+            className="flex h-8 w-8 items-center justify-center rounded-md text-slate-400 transition-colors hover:bg-white/10 hover:text-white"
+            aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          >
+            {collapsed ? (
+              <PanelLeftOpenIcon className="h-4 w-4" />
+            ) : (
+              <PanelLeftCloseIcon className="h-4 w-4" />
+            )}
+          </button>
         </div>
       </aside>
 
