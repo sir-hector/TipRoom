@@ -49,45 +49,37 @@ export default async function DashboardPage() {
           {rooms.map((room: Room) => {
             const role = room.members[0]?.role ?? 'MEMBER'
             return (
-              <Card key={room.id}>
-                <CardHeader className="pb-2">
-                  <div className="flex items-start justify-between gap-2">
-                    <span className="text-muted-foreground text-sm font-medium">
-                      {room.tournament.name}
-                    </span>
-                    {role === 'ADMIN' ? (
-                      <Badge className="bg-primary text-primary-foreground shrink-0">ADMIN</Badge>
-                    ) : (
-                      <Badge variant="secondary" className="shrink-0">
-                        MEMBER
-                      </Badge>
-                    )}
-                  </div>
-                  <p className="text-lg leading-tight font-semibold">{room.name}</p>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex flex-col gap-1">
-                      <p className="text-muted-foreground text-sm">
-                        {room._count.members} {room._count.members === 1 ? 'member' : 'members'} ·{' '}
-                        {formatScoringMode(room.scoringMode)}
-                      </p>
-                      <p className="text-muted-foreground text-xs">
-                        Invite:{' '}
-                        <span className="text-foreground font-mono font-medium">
-                          {room.inviteCode}
-                        </span>
-                      </p>
+              <Link key={room.id} href={`/rooms/${room.slug}`} className="block">
+                <Card className="hover:bg-muted/40 cursor-pointer transition-colors">
+                  <CardHeader className="pb-2">
+                    <div className="flex items-start justify-between gap-2">
+                      <span className="text-muted-foreground text-sm font-medium">
+                        {room.tournament.name}
+                      </span>
+                      {role === 'ADMIN' ? (
+                        <Badge className="bg-primary text-primary-foreground shrink-0">ADMIN</Badge>
+                      ) : (
+                        <Badge variant="secondary" className="shrink-0">
+                          MEMBER
+                        </Badge>
+                      )}
                     </div>
-                    <Link
-                      href={`/rooms/${room.slug}`}
-                      className={cn(buttonVariants({ variant: 'outline', size: 'sm' }), 'shrink-0')}
-                    >
-                      Open →
-                    </Link>
-                  </div>
-                </CardContent>
-              </Card>
+                    <p className="text-lg leading-tight font-semibold">{room.name}</p>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground text-sm">
+                      {room._count.members} {room._count.members === 1 ? 'member' : 'members'} ·{' '}
+                      {formatScoringMode(room.scoringMode)}
+                    </p>
+                    <p className="text-muted-foreground text-xs">
+                      Invite:{' '}
+                      <span className="text-foreground font-mono font-medium">
+                        {room.inviteCode}
+                      </span>
+                    </p>
+                  </CardContent>
+                </Card>
+              </Link>
             )
           })}
         </div>
