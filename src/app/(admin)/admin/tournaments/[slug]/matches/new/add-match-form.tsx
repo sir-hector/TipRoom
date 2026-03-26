@@ -5,6 +5,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { TeamCombobox } from '@/components/team-combobox'
 import { useState, useActionState } from 'react'
 import { useFormStatus } from 'react-dom'
 
@@ -34,9 +35,6 @@ export function AddMatchForm({ tournamentId, tournamentSlug, teams }: AddMatchFo
   const [homeTeamId, setHomeTeamId] = useState('')
   const [awayTeamId, setAwayTeamId] = useState('')
 
-  const selectClass =
-    'border-input bg-background ring-offset-background focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none'
-
   return (
     <form action={formAction} className="flex flex-col gap-5">
       <input type="hidden" name="tournamentId" value={tournamentId} />
@@ -49,45 +47,27 @@ export function AddMatchForm({ tournamentId, tournamentSlug, teams }: AddMatchFo
       )}
 
       <div className="grid gap-1.5">
-        <Label htmlFor="homeTeamId">Home team</Label>
-        <select
-          id="homeTeamId"
+        <Label>Home team</Label>
+        <TeamCombobox
           name="homeTeamId"
-          required
-          value={homeTeamId}
-          onChange={(e) => setHomeTeamId(e.target.value)}
-          className={selectClass}
-        >
-          <option value="">Select home team…</option>
-          {teams
-            .filter((t) => t.id !== awayTeamId)
-            .map((t) => (
-              <option key={t.id} value={t.id}>
-                {t.name}
-              </option>
-            ))}
-        </select>
+          teams={teams}
+          excludeId={awayTeamId}
+          selectedId={homeTeamId}
+          onSelect={setHomeTeamId}
+          placeholder="Select home team…"
+        />
       </div>
 
       <div className="grid gap-1.5">
-        <Label htmlFor="awayTeamId">Away team</Label>
-        <select
-          id="awayTeamId"
+        <Label>Away team</Label>
+        <TeamCombobox
           name="awayTeamId"
-          required
-          value={awayTeamId}
-          onChange={(e) => setAwayTeamId(e.target.value)}
-          className={selectClass}
-        >
-          <option value="">Select away team…</option>
-          {teams
-            .filter((t) => t.id !== homeTeamId)
-            .map((t) => (
-              <option key={t.id} value={t.id}>
-                {t.name}
-              </option>
-            ))}
-        </select>
+          teams={teams}
+          excludeId={homeTeamId}
+          selectedId={awayTeamId}
+          onSelect={setAwayTeamId}
+          placeholder="Select away team…"
+        />
       </div>
 
       <div className="grid gap-1.5">
