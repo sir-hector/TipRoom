@@ -17,13 +17,19 @@ function SubmitButton() {
   )
 }
 
+interface Team {
+  id: string
+  name: string
+}
+
 interface AddMatchFormProps {
   tournamentId: string
   tournamentSlug: string
   tournamentName: string
+  teams: Team[]
 }
 
-export function AddMatchForm({ tournamentId, tournamentSlug }: AddMatchFormProps) {
+export function AddMatchForm({ tournamentId, tournamentSlug, teams }: AddMatchFormProps) {
   const [state, formAction] = useActionState(createMatch, null)
 
   return (
@@ -38,13 +44,37 @@ export function AddMatchForm({ tournamentId, tournamentSlug }: AddMatchFormProps
       )}
 
       <div className="grid gap-1.5">
-        <Label htmlFor="homeTeam">Home team</Label>
-        <Input id="homeTeam" name="homeTeam" required placeholder="e.g. Poland" />
+        <Label htmlFor="homeTeamId">Home team</Label>
+        <select
+          id="homeTeamId"
+          name="homeTeamId"
+          required
+          className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+        >
+          <option value="">Select home team…</option>
+          {teams.map((t) => (
+            <option key={t.id} value={t.id}>
+              {t.name}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div className="grid gap-1.5">
-        <Label htmlFor="awayTeam">Away team</Label>
-        <Input id="awayTeam" name="awayTeam" required placeholder="e.g. Germany" />
+        <Label htmlFor="awayTeamId">Away team</Label>
+        <select
+          id="awayTeamId"
+          name="awayTeamId"
+          required
+          className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+        >
+          <option value="">Select away team…</option>
+          {teams.map((t) => (
+            <option key={t.id} value={t.id}>
+              {t.name}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div className="grid gap-1.5">

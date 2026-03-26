@@ -1,4 +1,4 @@
-import { getTournamentWithMatches } from '@/app/actions/tournaments'
+import { getTournamentTeams, getTournamentWithMatches } from '@/app/actions/tournaments'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
@@ -10,6 +10,8 @@ export default async function NewMatchPage({ params }: { params: Promise<{ slug:
   const tournament = await getTournamentWithMatches(slug)
 
   if (!tournament) notFound()
+
+  const tournamentTeams = await getTournamentTeams(tournament.id)
 
   return (
     <main className="container mx-auto max-w-4xl px-4 py-8">
@@ -34,6 +36,7 @@ export default async function NewMatchPage({ params }: { params: Promise<{ slug:
         tournamentId={tournament.id}
         tournamentSlug={slug}
         tournamentName={tournament.name}
+        teams={tournamentTeams.map((t) => ({ id: t.teamId, name: t.team.name }))}
       />
 
       <div className="mt-4">

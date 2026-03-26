@@ -28,6 +28,15 @@ export async function getTournamentWithMatches(slug: string) {
   })
 }
 
+export async function getTournamentTeams(tournamentId: string) {
+  await requireAdmin()
+  return db.tournamentTeam.findMany({
+    where: { tournamentId },
+    include: { team: { select: { id: true, name: true } } },
+    orderBy: { team: { name: 'asc' } },
+  })
+}
+
 export async function getMatchForEdit(id: string) {
   await requireAdmin()
   return db.match.findUnique({

@@ -32,6 +32,7 @@ model Tournament {
 
   matches Match[]
   rooms   Room[]
+  teams   TournamentTeam[]
 }
 
 model Match {
@@ -39,6 +40,8 @@ model Match {
   tournamentId String
   homeTeam     String
   awayTeam     String
+  homeTeamId   String?
+  awayTeamId   String?
   kickoffAt    DateTime
   betsLockedAt DateTime
   homeScore    Int?
@@ -48,8 +51,10 @@ model Match {
   awayOdds     Float?
   drawOdds     Float?
 
-  tournament Tournament @relation(fields: [tournamentId], references: [id])
-  bets       Bet[]
+  tournament  Tournament @relation(fields: [tournamentId], references: [id])
+  homeTeamRel Team?      @relation("HomeTeam", fields: [homeTeamId], references: [id])
+  awayTeamRel Team?      @relation("AwayTeam", fields: [awayTeamId], references: [id])
+  bets        Bet[]
 
   @@index([tournamentId])
 }
@@ -61,6 +66,32 @@ enum MatchStatus {
   FINISHED
   CANCELLED
   POSTPONED
+}
+
+enum TeamType {
+  NATIONAL
+  CLUB
+}
+
+model Team {
+  id      String   @id @default(cuid())
+  name    String   @unique
+  type    TeamType @default(NATIONAL)
+  flagUrl String?
+
+  tournaments TournamentTeam[]
+  homeMatches Match[]          @relation("HomeTeam")
+  awayMatches Match[]          @relation("AwayTeam")
+}
+
+model TournamentTeam {
+  tournamentId String
+  teamId       String
+
+  tournament Tournament @relation(fields: [tournamentId], references: [id])
+  team       Team       @relation(fields: [teamId], references: [id])
+
+  @@id([tournamentId, teamId])
 }
 
 model Room {

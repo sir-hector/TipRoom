@@ -11,8 +11,8 @@ import type { ScoringConfig } from '@/lib/scoring'
 
 const CreateMatchSchema = z.object({
   tournamentId: z.string().min(1),
-  homeTeam: z.string().min(1).max(100),
-  awayTeam: z.string().min(1).max(100),
+  homeTeamId: z.string().min(1),
+  awayTeamId: z.string().min(1),
   kickoffAt: z.string().datetime(),
   homeOdds: z.coerce.number().positive().optional(),
   awayOdds: z.coerce.number().positive().optional(),
@@ -41,17 +41,30 @@ export async function createMatch(_prev: unknown, formData: FormData): Promise<{
 
   const parsed = CreateMatchSchema.safeParse({
     tournamentId: formData.get('tournamentId'),
-    homeTeam: (formData.get('homeTeam') as string)?.trim(),
-    awayTeam: (formData.get('awayTeam') as string)?.trim(),
+    homeTeamId: formData.get('homeTeamId'),
+    awayTeamId: formData.get('awayTeamId'),
     kickoffAt: formData.get('kickoffAt'),
     homeOdds: formData.get('homeOdds') || undefined,
     awayOdds: formData.get('awayOdds') || undefined,
     drawOdds: formData.get('drawOdds') || undefined,
   })
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? 'Invalid input.' }
-  const { tournamentId, homeTeam, awayTeam, kickoffAt, homeOdds, awayOdds, drawOdds } = parsed.data
+  const { tournamentId, homeTeamId, awayTeamId, kickoffAt, homeOdds, awayOdds, drawOdds } =
+    parsed.data
+
+  if (homeTeamId === awayTeamId) return { error: 'Home and away teams must be different.' }
 
   const tournamentSlug = formData.get('tournamentSlug') as string
+
+  // Validate both teams belong to this tournament
+  const teamLinks = await db.tournamentTeam.findMany({
+    where: { tournamentId, teamId: { in: [homeTeamId, awayTeamId] } },
+    include: { team: { select: { id: true, name: true } } },
+  })
+  if (teamLinks.length !== 2) return { error: 'Invalid team selection.' }
+
+  const homeTeamRecord = teamLinks.find((t) => t.teamId === homeTeamId)!.team
+  const awayTeamRecord = teamLinks.find((t) => t.teamId === awayTeamId)!.team
 
   const kickoffDate = new Date(kickoffAt)
   const betsLockedAt = new Date(kickoffDate.getTime() - 60 * 60 * 1000)
@@ -59,8 +72,10 @@ export async function createMatch(_prev: unknown, formData: FormData): Promise<{
   await db.match.create({
     data: {
       tournamentId,
-      homeTeam,
-      awayTeam,
+      homeTeam: homeTeamRecord.name,
+      awayTeam: awayTeamRecord.name,
+      homeTeamId,
+      awayTeamId,
       kickoffAt: kickoffDate,
       betsLockedAt,
       homeOdds: homeOdds ?? null,
