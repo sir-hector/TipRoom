@@ -23,15 +23,22 @@ function isoToFlag(iso: string) {
 }
 
 const TEAM_FLAGS: Record<string, string> = {
+  // Hosts
   USA: isoToFlag('US'),
   Canada: isoToFlag('CA'),
   Mexico: isoToFlag('MX'),
+  // CONMEBOL
   Argentina: isoToFlag('AR'),
   Brazil: isoToFlag('BR'),
   Colombia: isoToFlag('CO'),
   Uruguay: isoToFlag('UY'),
   Ecuador: isoToFlag('EC'),
   Venezuela: isoToFlag('VE'),
+  Bolivia: isoToFlag('BO'),
+  Chile: isoToFlag('CL'),
+  Paraguay: isoToFlag('PY'),
+  Peru: isoToFlag('PE'),
+  // UEFA
   France: isoToFlag('FR'),
   England: '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
   Germany: isoToFlag('DE'),
@@ -46,11 +53,39 @@ const TEAM_FLAGS: Record<string, string> = {
   Croatia: isoToFlag('HR'),
   Turkey: isoToFlag('TR'),
   Scotland: '🏴󠁧󠁢󠁳󠁣󠁴󠁿',
+  Wales: '🏴󠁧󠁢󠁷󠁬󠁳󠁿',
   Slovakia: isoToFlag('SK'),
   Hungary: isoToFlag('HU'),
+  Poland: isoToFlag('PL'),
+  Belgium: isoToFlag('BE'),
+  'Czech Republic': isoToFlag('CZ'),
+  Greece: isoToFlag('GR'),
+  Norway: isoToFlag('NO'),
+  Sweden: isoToFlag('SE'),
+  Finland: isoToFlag('FI'),
+  Russia: isoToFlag('RU'),
+  Ukraine: isoToFlag('UA'),
+  Romania: isoToFlag('RO'),
+  Bulgaria: isoToFlag('BG'),
+  Slovenia: isoToFlag('SI'),
+  Albania: isoToFlag('AL'),
+  Iceland: isoToFlag('IS'),
+  Ireland: isoToFlag('IE'),
+  Bosnia: isoToFlag('BA'),
+  Montenegro: isoToFlag('ME'),
+  'North Macedonia': isoToFlag('MK'),
+  Georgia: isoToFlag('GE'),
+  // CONCACAF
   Panama: isoToFlag('PA'),
   'Costa Rica': isoToFlag('CR'),
   Honduras: isoToFlag('HN'),
+  Jamaica: isoToFlag('JM'),
+  'Trinidad and Tobago': isoToFlag('TT'),
+  'El Salvador': isoToFlag('SV'),
+  Haiti: isoToFlag('HT'),
+  Cuba: isoToFlag('CU'),
+  Guatemala: isoToFlag('GT'),
+  // CAF
   Morocco: isoToFlag('MA'),
   Senegal: isoToFlag('SN'),
   Egypt: isoToFlag('EG'),
@@ -60,6 +95,10 @@ const TEAM_FLAGS: Record<string, string> = {
   'DR Congo': isoToFlag('CD'),
   Ghana: isoToFlag('GH'),
   Cameroon: isoToFlag('CM'),
+  Algeria: isoToFlag('DZ'),
+  Tunisia: isoToFlag('TN'),
+  Mali: isoToFlag('ML'),
+  // AFC
   Japan: isoToFlag('JP'),
   'South Korea': isoToFlag('KR'),
   Australia: isoToFlag('AU'),
@@ -68,13 +107,16 @@ const TEAM_FLAGS: Record<string, string> = {
   Iraq: isoToFlag('IQ'),
   Jordan: isoToFlag('JO'),
   Uzbekistan: isoToFlag('UZ'),
+  China: isoToFlag('CN'),
+  India: isoToFlag('IN'),
+  Qatar: isoToFlag('QA'),
+  UAE: isoToFlag('AE'),
+  // OFC
   'New Zealand': isoToFlag('NZ'),
-  Romania: isoToFlag('RO'),
-  Ukraine: isoToFlag('UA'),
 }
 
 export function getTeamFlag(name: string): string {
-  return TEAM_FLAGS[name] ?? '🏳️'
+  return TEAM_FLAGS[name] ?? ''
 }
 
 interface Team {
