@@ -1,3 +1,18 @@
+// Pentagon + 5 petal paths — each petal is a closed shape:
+// M vertex → L circle-edge → arc-to-next-edge → L next-vertex → Z (closes along pentagon edge)
+// Pentagon radius 5.5, circle radius 13, centre (20,20)
+// Vertices at angles -90°, -18°, 54°, 126°, 198° (pointing up)
+
+export const BALL_PENTAGON = 'M 20,14.5 L 25.23,18.3 L 23.23,24.45 L 16.77,24.45 L 14.77,18.3 Z'
+
+export const BALL_PETALS = [
+  'M 20,14.5    L 20,7          A 13,13 0 0,1 32.36,15.98  L 25.23,18.3  Z',
+  'M 25.23,18.3  L 32.36,15.98  A 13,13 0 0,1 27.64,30.52  L 23.23,24.45 Z',
+  'M 23.23,24.45 L 27.64,30.52  A 13,13 0 0,1 12.36,30.52  L 16.77,24.45 Z',
+  'M 16.77,24.45 L 12.36,30.52  A 13,13 0 0,1 7.64,15.98   L 14.77,18.3  Z',
+  'M 14.77,18.3  L 7.64,15.98   A 13,13 0 0,1 20,7         L 20,14.5     Z',
+]
+
 export function Logo({ size = 28 }: { size?: number }) {
   return (
     <svg
@@ -8,32 +23,20 @@ export function Logo({ size = 28 }: { size?: number }) {
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden
     >
-      <defs>
-        <clipPath id="logo-ball">
-          <circle cx="20" cy="20" r="11" />
-        </clipPath>
-      </defs>
-
-      {/* Dark background */}
       <rect width="40" height="40" rx="10" fill="#0f172a" />
 
-      {/* White ball */}
-      <circle cx="20" cy="20" r="11" fill="white" />
+      {BALL_PETALS.map((d, i) => (
+        <path
+          key={i}
+          d={d}
+          fill="white"
+          stroke="#0f172a"
+          strokeWidth="1.5"
+          strokeLinejoin="round"
+        />
+      ))}
 
-      {/* Football pattern clipped to ball */}
-      <g clipPath="url(#logo-ball)">
-        {/* Centre pentagon */}
-        <polygon points="20,15.5 24.3,18.6 22.7,23.6 17.3,23.6 15.7,18.6" fill="#0f172a" />
-        {/* Seam lines */}
-        <line x1="20" y1="15.5" x2="20" y2="8" stroke="#0f172a" strokeWidth="1.3" />
-        <line x1="24.3" y1="18.6" x2="31" y2="16.4" stroke="#0f172a" strokeWidth="1.3" />
-        <line x1="22.7" y1="23.6" x2="27" y2="29.5" stroke="#0f172a" strokeWidth="1.3" />
-        <line x1="17.3" y1="23.6" x2="13" y2="29.5" stroke="#0f172a" strokeWidth="1.3" />
-        <line x1="15.7" y1="18.6" x2="9" y2="16.4" stroke="#0f172a" strokeWidth="1.3" />
-      </g>
-
-      {/* Ball outline */}
-      <circle cx="20" cy="20" r="11" stroke="#0f172a" strokeWidth="1" strokeOpacity="0.15" />
+      <path d={BALL_PENTAGON} fill="#0f172a" />
     </svg>
   )
 }
